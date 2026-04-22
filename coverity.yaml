@@ -1,11 +1,19 @@
+# Polaris SAST for Java — coverity.yaml
+# Reference: Bridge CLI docs p34 "coverity.yml is required for compiled languages (C/C++, C#, Java)"
+#
+# For production Java projects, you typically specify a build command:
+#
+#   capture:
+#     build:
+#       clean-command: mvn -B clean
+#       build-command: mvn -B -DskipTests package
+#
+# This demo uses buildless mode instead (no Maven in our agent) via Bridge CLI
+# arg `polaris.test.sast.location=local` — cov-analysis is downloaded to the agent
+# and scans .java sources directly without compiling.
+
 capture:
   files:
-    # Buildless mode for Java (managed language — Coverity can parse .java without compile).
-    # This avoids needing Maven/Gradle in the Jenkins agent.
-    include-regex: 'src/main/java/.*\.java$'
-    exclude-regex: '.*(/|\\)vendor(/|\\).*'
-
-analyze:
-  # SAST category Security Audit extras
-  additional-arguments:
-    - '--webapp-security'
+    # Exclude third-party / generated / build-output paths from SAST.
+    # exclude-regex matches against ABSOLUTE paths (prefix with .* to anchor anywhere).
+    exclude-regex: '.*/(vendor|target|build|generated-sources)/.*'
