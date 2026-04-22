@@ -1,0 +1,11 @@
+capture:
+  files:
+    # Buildless mode for Java (managed language — Coverity can parse .java without compile).
+    # This avoids needing Maven/Gradle in the Jenkins agent.
+    include-regex: 'src/main/java/.*\.java$'
+    exclude-regex: '.*(/|\\)vendor(/|\\).*'
+
+analyze:
+  # SAST category Security Audit extras
+  additional-arguments:
+    - '--webapp-security'
